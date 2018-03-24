@@ -1,5 +1,6 @@
-sequelize = require('../../lib/db').sequelize;
-Sequelize = require('../../lib/db').Sequelize;
+const db = require('../../lib/db');
+sequelize = db.sequelize;
+Sequelize = db.Sequelize;
 
 const User = sequelize.define('user', {
     firstName: {
@@ -11,6 +12,4 @@ const User = sequelize.define('user', {
 });
 
 
-module.exports.create = function (req, res) {
-    User.create({ firstName: 'fnord', lastName: 'omnomnom' });
-};
+module.exports = User;

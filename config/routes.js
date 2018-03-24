@@ -1,5 +1,7 @@
-var home = require('../app/controllers/home');
+let home = require('../app/controllers/home');
 const userController = require('../app/controllers/UserController');
+const validationRules = require('../lib/validation/rules');
+const { check, validationResult } = require('express-validator/check');
 //you can include all your controllers
 
 module.exports = function (app) {
@@ -21,7 +23,6 @@ module.exports = function (app) {
     //     failureRedirect: '/login', // redirect back to the signup page if there is an error
     //     failureFlash: true // allow flash messages
     // }));
+    app.get('/create-user', validationRules.createUser, userController.createUser);
 
-    app.get('/create-user', userController.createUser);
-
-}
+};

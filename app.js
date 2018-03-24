@@ -1,28 +1,26 @@
-var express = require('express');
+let express = require('express');
 
-var app = express();
-var multer = require('multer')
-var constants = require('constants');
-var constant = require('./config/constants');
+let app = express();
+let multer = require('multer')
+let constants = require('constants');
+let constant = require('./config/constants');
 
 
-var port = process.env.PORT || 8042;
+let port = process.env.PORT || 8042;
 
-var passport = require('passport');
-var flash = require('connect-flash');
-var path = require('path');
+let passport = require('passport');
+let flash = require('connect-flash');
+let path = require('path');
 
-var morgan = require('morgan');
-var cookieParser = require('cookie-parser');
-var session = require('express-session');
-var bodyParser = require('body-parser');
-var dateFormat = require('dateformat');
-var now = new Date();
-
+let morgan = require('morgan');
+let cookieParser = require('cookie-parser');
+let session = require('express-session');
+let bodyParser = require('body-parser');
+let dateFormat = require('dateformat');
+let now = new Date();
+const { check, validationResult } = require('express-validator/check');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
-
-
 
 
 /***************DB configuratrion********************/
@@ -41,7 +39,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.set('views', path.join(__dirname, 'app/views'));
 app.set('view engine', 'ejs');
 //app.set('view engine', 'ejs'); // set up ejs for templating
-
 
 //required for passport
 //app.use(session({ secret: 'iloveyoudear...' })); // session secret
@@ -63,8 +60,21 @@ require('./config/routes.js')(app, passport); // load our routes and pass in our
 //launch ======================================================================
 app.listen(port);
 console.log('The magic happens on port ' + port);
+app.use(function(err, req, res, next){
+    res.status(400).json(err);
+});
+app.get('/login1', [
+        check('email').isEmail().withMessage('must be an email')
+    ], function(req, res){
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(422).json({ errors: errors.mapped() });
+    }
+    res.json(1);
+});
 //catch 404 and forward to error handler
 app.use(function (req, res, next) {
+    // specific for validation errors
     res.status(404).render('404', {title: "Sorry, page not found", session: req.sessionbo});
 });
 
