@@ -18,7 +18,6 @@ let session = require('express-session');
 let bodyParser = require('body-parser');
 let dateFormat = require('dateformat');
 let now = new Date();
-const { check, validationResult } = require('express-validator/check');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
@@ -63,22 +62,9 @@ console.log('The magic happens on port ' + port);
 app.use(function(err, req, res, next){
     res.status(400).json(err);
 });
-app.get('/login1', [
-        check('email').isEmail().withMessage('must be an email')
-    ], function(req, res){
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        return res.status(422).json({ errors: errors.mapped() });
-    }
-    res.json(1);
-});
 //catch 404 and forward to error handler
 app.use(function (req, res, next) {
     // specific for validation errors
     res.status(404).render('404', {title: "Sorry, page not found", session: req.sessionbo});
-});
-
-app.use(function (req, res, next) {
-    res.status(500).render('404', {title: "Sorry, page not found"});
 });
 exports = module.exports = app;
